@@ -117,4 +117,45 @@ public class MiniFileManager {
         return origen.renameTo(destino);
     }
     
+    public void info(String dir) throws FicheroNoEncontrado{
+        long sumaTamano=0;
+        if(!dir.contains("\\")){ //Este IF permite introducir el nombre de un File que sea hijo directo del File al que apunta la ruta actual sin tener que escribir la ruta completa, ya que este método se la añade.
+            dir=ruta.getAbsolutePath()+"\\"+dir;            
+        }
+        if(dir.equals("")){ //Este IF me permite utilizar el info sin ningún parámetro de modo que el comando se ejecutará sobre la ruta actual.
+            dir=ruta.getAbsolutePath();
+        }
+        File archivo=new File(dir);
+        if(!(archivo.exists())){
+            throw new FicheroNoEncontrado("Ruta al fichero especificado no existe.");
+        }else{
+            if(archivo.isFile()){
+                System.out.println(archivo.getName()+" --- Tamaño: "+archivo.length()+" bytes --- "+(archivo.length()/1024)/1024+" MB --- "+new Date(archivo.lastModified()));
+            }else{
+                File contenido[]=archivo.listFiles();
+                for(File f : contenido){
+                    if(f.isFile()){
+                        sumaTamano+=f.length(); 
+                    }else{
+                        sumaTamano+=addingSizeSubFolders(f);
+                    }
+                }//Fin FOR 
+                System.out.println(archivo.getName()+" --- Tamaño: "+sumaTamano+" bytes --- "+(sumaTamano/1024)/1024+" MB --- "+new Date(archivo.lastModified()));
+            }//Fin Else archivo es Directorio
+        }
+    }
+    
+    public long addingSizeSubFolders(File dir){
+        long sumaTamanoSubs=0;
+        File contenido[]=dir.listFiles();
+            for(File f : contenido){
+                if(f.isFile()){
+                   sumaTamanoSubs+=f.length(); 
+                }else{
+                   sumaTamanoSubs+=addingSizeSubFolders(f);
+                }  
+            }//Fin FOR
+        return sumaTamanoSubs;        
+    }
+    
 }//FIN Class

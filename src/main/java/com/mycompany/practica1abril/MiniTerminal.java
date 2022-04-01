@@ -59,6 +59,19 @@ public class MiniTerminal {
                 ruta_actual.printList(true);
                 Menu();
             break;
+            case "info": 
+                try{
+                    if(comando.length==1){
+                        ruta_actual.info("");
+                    }else{
+                        ruta_actual.info(comando[1]);
+                    }  
+                }catch (FicheroNoEncontrado e){
+                    System.err.println(e.getMessage());
+                    e.printStackTrace();
+                } 
+                Menu();
+            break;
             case "mkdir":
                 try{
                     ruta_actual.makeDir(comando[1]);
@@ -67,7 +80,6 @@ public class MiniTerminal {
                     System.err.println(e.getMessage());
                     e.printStackTrace();
                 }
-                
                 Menu();
             break;
             case "rm":
